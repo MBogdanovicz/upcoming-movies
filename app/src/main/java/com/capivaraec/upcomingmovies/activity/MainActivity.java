@@ -9,16 +9,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.adapter.Adapter;
 import com.capivaraec.upcomingmovies.adapter.DividerItemDecoration;
+import com.capivaraec.upcomingmovies.business.Services;
 import com.capivaraec.upcomingmovies.object.Movie;
 
 import java.util.ArrayList;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -54,22 +59,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //TODO: carregar lista do servidor
-        movies = new ArrayList<>();
-        movies.add(new Movie("A maldição da ilha dos macacos", "12/12/2017"));
-        movies.add(new Movie("Star Wars", "12/12/2017"));
-        movies.add(new Movie("Os Simpsons", "12/12/2017"));
-        movies.add(new Movie("Psicose", "12/12/2017"));
-        movies.add(new Movie("História sem fim", "12/12/2017"));
+        loadMovies();
 
-        filteredMovies = movies;
+        //TODO: carregar lista do servidor
+//        movies = new ArrayList<>();
+//        movies.add(new Movie("A maldição da ilha dos macacos", "12/12/2017"));
+//        movies.add(new Movie("Star Wars", "12/12/2017"));
+//        movies.add(new Movie("Os Simpsons", "12/12/2017"));
+//        movies.add(new Movie("Psicose", "12/12/2017"));
+//        movies.add(new Movie("História sem fim", "12/12/2017"));
+//
+//        filteredMovies = movies;
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
-
-        mAdapter = new Adapter(filteredMovies);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -84,6 +86,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setSearchListeners(searchView);
 
         return true;
+    }
+
+    private void loadMovies() {
+        Services.loadMovies(0).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<Movie>>() {
+            @Override
+            public void accept(ArrayList<Movie> movies) throws Exception {
+                MainActivity.this.movies = movies;
+
+                mAdapter = new Adapter(filteredMovies);
+                mRecyclerView.setAdapter(mAdapter);
+
+                mProgressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setSearchListeners(final SearchView searchView) {
