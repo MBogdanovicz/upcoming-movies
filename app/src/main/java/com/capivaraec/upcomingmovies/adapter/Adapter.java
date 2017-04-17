@@ -21,10 +21,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvName;
+        private TextView tvTitle;
+        private TextView tvDate;
+
         private ViewHolder(View v) {
             super(v);
-            tvName = (TextView) v.findViewById(R.id.movie_title);
+            tvTitle = (TextView) v.findViewById(R.id.movie_title);
+            tvDate = (TextView) v.findViewById(R.id.movie_release_date);
         }
     }
 
@@ -44,7 +47,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         Movie movie = mMovies.get(position);
-        holder.tvName.setText(movie.getTitle());
+        holder.tvTitle.setText(movie.getTitle());
+        holder.tvDate.setText(movie.getReleaseDate());
 
     }
 
