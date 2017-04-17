@@ -56,4 +56,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public int getItemCount() {
         return mMovies.size();
     }
+
+    public void updateData(ArrayList<Movie> movies) {
+        mMovies = movies;
+        notifyDataSetChanged();
+    }
 }
