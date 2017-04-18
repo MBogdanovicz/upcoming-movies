@@ -1,10 +1,9 @@
 package com.capivaraec.upcomingmovies.business;
 
-import com.capivaraec.upcomingmovies.object.Result;
 import com.capivaraec.upcomingmovies.object.Upcoming;
 import com.capivaraec.upcomingmovies.restAPI.RestAPI;
 
-import java.util.ArrayList;
+import java.util.Locale;
 
 import io.reactivex.Observable;
 
@@ -15,6 +14,7 @@ import io.reactivex.Observable;
 public class Services {
 
     public static Observable<Upcoming> loadMovies(int page) {
-        return RestAPI.loadMovies(page);
+
+        return RestAPI.loadMovies(page, Locale.getDefault().toString().replace("_", "-"));
     }
 }

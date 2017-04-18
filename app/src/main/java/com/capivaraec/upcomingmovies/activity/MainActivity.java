@@ -23,9 +23,7 @@ import com.capivaraec.upcomingmovies.object.Upcoming;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -33,12 +31,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private RecyclerView mRecyclerView;
     private Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefresh;
     private ProgressBar mProgressBar;
 
+    private int page = 1;
+    private int totalPages;
     private List<Result> movies;
     private List<Result> filteredMovies;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private boolean loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadMovies();
+                page = 1;
+                movies = null;
+                loadMovies(page);
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(dy > 0) {
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (!loading && page < totalPages && ((visibleItemCount + pastVisiblesItems) >= totalItemCount)) {
+                        loading = true;
+                        loadMovies(++page);
+                    }
+                }
             }
         });
 
@@ -63,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        loadMovies();
+        loadMovies(1);
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
     }
@@ -82,22 +102,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
-    private void loadMovies() {
-        Services.loadMovies(1).subscribeOn(Schedulers.io())
+    private void loadMovies(final int page) {
+        Services.loadMovies(page).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Upcoming>() {
 
             @Override
             public void accept(Upcoming upcoming) throws Exception {
-                movies = upcoming.getResults();
+                if (movies == null) {
+                    movies = upcoming.getResults();
 
-                mAdapter = new Adapter(movies);
-                mRecyclerView.setAdapter(mAdapter);
+                    mAdapter = new Adapter(MainActivity.this, movies);
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    movies.addAll(upcoming.getResults());
+
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                totalPages = upcoming.getTotal_pages();
 
                 mProgressBar.setVisibility(View.GONE);
                 mSwipeRefresh.setRefreshing(false);
+                loading = false;
             }
         });
+    }
+
+    public void showMovieDetails(Result movie) {
+        Log.d("show movie", movie.getTitle());
     }
 
     private void setSearchListeners(final SearchView searchView) {
@@ -137,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         filteredMovies = new ArrayList<>();
         String[] queries = query.split(" ");
+
         for (Result movie : movies) {
             for (String word : queries) {
                 if (movie.getTitle().toLowerCase().contains(word.toLowerCase())) {

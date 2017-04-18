@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.capivaraec.upcomingmovies.R;
+import com.capivaraec.upcomingmovies.activity.MainActivity;
 import com.capivaraec.upcomingmovies.object.Result;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private List<Result> mMovies;
+    private MainActivity activity;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -31,8 +33,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-    public Adapter(List<Result> movies) {
+    public Adapter(MainActivity activity, List<Result> movies) {
         mMovies = movies;
+        this.activity = activity;
     }
 
     @Override
@@ -46,9 +49,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Result movie = mMovies.get(position);
+        final Result movie = mMovies.get(position);
         holder.tvTitle.setText(movie.getTitle());
         holder.tvDate.setText(movie.getRelease_date());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.showMovieDetails(movie);
+            }
+        });
 
     }
 
