@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.capivaraec.upcomingmovies.R;
-import com.capivaraec.upcomingmovies.object.Movie;
+import com.capivaraec.upcomingmovies.object.Result;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marcelo on 16/04/17.
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
-    private ArrayList<Movie> mMovies;
+    private List<Result> mMovies;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -31,7 +31,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-    public Adapter(ArrayList<Movie> movies) {
+    public Adapter(List<Result> movies) {
         mMovies = movies;
     }
 
@@ -46,9 +46,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Movie movie = mMovies.get(position);
+        Result movie = mMovies.get(position);
         holder.tvTitle.setText(movie.getTitle());
-        holder.tvDate.setText(movie.getReleaseDate());
+        holder.tvDate.setText(movie.getRelease_date());
 
     }
 
@@ -57,7 +57,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return mMovies.size();
     }
 
-    public void updateData(ArrayList<Movie> movies) {
+    public void updateData(List<Result> movies) {
         mMovies = movies;
         notifyDataSetChanged();
     }

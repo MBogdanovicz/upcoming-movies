@@ -12,16 +12,20 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.androidnetworking.AndroidNetworking;
 import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.adapter.Adapter;
 import com.capivaraec.upcomingmovies.adapter.DividerItemDecoration;
 import com.capivaraec.upcomingmovies.business.Services;
-import com.capivaraec.upcomingmovies.object.Movie;
+import com.capivaraec.upcomingmovies.object.Result;
+import com.capivaraec.upcomingmovies.object.Upcoming;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -33,13 +37,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SwipeRefreshLayout mSwipeRefresh;
     private ProgressBar mProgressBar;
 
-    private ArrayList<Movie> movies;
-    private ArrayList<Movie> filteredMovies;
+    private List<Result> movies;
+    private List<Result> filteredMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AndroidNetworking.initialize(this);
 
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.movies_list_refresh);
         mRecyclerView = (RecyclerView) findViewById(R.id.movies_list);
@@ -48,9 +54,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                movies.add(0, new Movie("O Exterminador do Futuro 2", "10/02/1986"));
-                mAdapter.updateData(movies);
-                mSwipeRefresh.setRefreshing(false);
+                loadMovies();
             }
         });
 
@@ -60,16 +64,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         loadMovies();
-
-        //TODO: carregar lista do servidor
-//        movies = new ArrayList<>();
-//        movies.add(new Movie("A maldição da ilha dos macacos", "12/12/2017"));
-//        movies.add(new Movie("Star Wars", "12/12/2017"));
-//        movies.add(new Movie("Os Simpsons", "12/12/2017"));
-//        movies.add(new Movie("Psicose", "12/12/2017"));
-//        movies.add(new Movie("História sem fim", "12/12/2017"));
-//
-//        filteredMovies = movies;
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
     }
@@ -89,17 +83,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     private void loadMovies() {
-        Services.loadMovies(0).subscribeOn(Schedulers.newThread())
+        Services.loadMovies(1).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ArrayList<Movie>>() {
-            @Override
-            public void accept(ArrayList<Movie> movies) throws Exception {
-                MainActivity.this.movies = movies;
+                .subscribe(new Consumer<Upcoming>() {
 
-                mAdapter = new Adapter(filteredMovies);
+            @Override
+            public void accept(Upcoming upcoming) throws Exception {
+                movies = upcoming.getResults();
+
+                mAdapter = new Adapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
 
                 mProgressBar.setVisibility(View.GONE);
+                mSwipeRefresh.setRefreshing(false);
             }
         });
     }
@@ -141,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         filteredMovies = new ArrayList<>();
         String[] queries = query.split(" ");
-        for (Movie movie : movies) {
+        for (Result movie : movies) {
             for (String word : queries) {
                 if (movie.getTitle().toLowerCase().contains(word.toLowerCase())) {
                     filteredMovies.add(movie);
