@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/detail_movie_poster"
+            android:layout_width="90dp"
+            android:layout_height="160dp"
+            android:layout_margin="16dp" />
+
+        <TextView
+            android:id="@+id/detail_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/detail_movie_poster"
+            android:layout_alignTop="@id/detail_movie_poster"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detail_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_movie_title"
+            android:layout_alignStart="@id/detail_movie_title" />
+
+        <LinearLayout
+            android:id="@+id/first_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_below="@id/detail_movie_poster"
+            android:orientation="horizontal"
+            android:layout_margin="16dp" />
+
+        <TextView
+            android:id="@+id/detail_genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/first_separator"
+            android:layout_alignStart="@id/detail_movie_poster" />
+
+        <LinearLayout
+            android:id="@+id/second_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_below="@id/detail_genre"
+            android:orientation="horizontal"
+            android:layout_margin="16dp" />
+
+        <TextView
+            android:id="@+id/detail_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/second_separator"
+            android:layout_alignStart="@id/detail_movie_poster" />
+    </RelativeLayout>
+
+</ScrollView>

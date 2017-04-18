@@ -1,5 +1,6 @@
 package com.capivaraec.upcomingmovies.business;
 
+import com.capivaraec.upcomingmovies.object.Result;
 import com.capivaraec.upcomingmovies.object.Upcoming;
 import com.capivaraec.upcomingmovies.restAPI.RestAPI;
 
@@ -15,6 +16,14 @@ public class Services {
 
     public static Observable<Upcoming> loadMovies(int page) {
 
-        return RestAPI.loadMovies(page, Locale.getDefault().toString().replace("_", "-"));
+        return RestAPI.loadMovies(page, getLanguage());
+    }
+
+    public static Observable<Result> loadMovieDetails(int movieId) {
+        return RestAPI.loadMovieDetails(movieId, getLanguage());
+    }
+
+    private static String getLanguage() {
+        return Locale.getDefault().toString().replace("_", "-");
     }
 }

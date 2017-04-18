@@ -1,6 +1,7 @@
 package com.capivaraec.upcomingmovies.activity;
 
 import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -130,7 +131,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void showMovieDetails(Result movie) {
-        Log.d("show movie", movie.getTitle());
+        Intent intent = new Intent(getBaseContext(), MovieDetailActivity.class);
+        intent.putExtra("MOVIE", movie);
+        startActivity(intent);
     }
 
     private void setSearchListeners(final SearchView searchView) {

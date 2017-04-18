@@ -1,10 +1,13 @@
 package com.capivaraec.upcomingmovies.object;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by marcelo on 16/04/17.
  */
 
-public class Result {
+public class Result implements Serializable {
 
     private String poster_path;
     private String overview;
@@ -12,6 +15,8 @@ public class Result {
     private int id;
     private String original_title;
     private String title;
+
+    private List<Genre> genres;
 
     public String getPoster_path() {
         return poster_path;
@@ -60,4 +65,13 @@ public class Result {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
 }
