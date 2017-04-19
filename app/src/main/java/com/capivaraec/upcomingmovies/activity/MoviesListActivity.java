@@ -18,16 +18,17 @@ import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.adapter.Adapter;
 import com.capivaraec.upcomingmovies.adapter.DividerItemDecoration;
 import com.capivaraec.upcomingmovies.business.Services;
+import com.capivaraec.upcomingmovies.object.Genres;
 import com.capivaraec.upcomingmovies.object.Result;
 import com.capivaraec.upcomingmovies.object.Upcoming;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -38,13 +39,15 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefresh;
     private ProgressBar mProgressBar;
+    private SearchView searchView;
 
-    private int page = 1;
-    private int totalPages;
+    private int page = 1, searchingPage = 1;
+    private int totalPages, searchingTotalPages;
     private List<Result> movies;
     private List<Result> filteredMovies;
-    private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean loading;
+    private boolean searching;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +75,19 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
                 if(dy > 0) {
                     visibleItemCount = mLayoutManager.getChildCount();
                     totalItemCount = mLayoutManager.getItemCount();
-                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+                    pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
 
-                    if (!loading && page < totalPages && ((visibleItemCount + pastVisiblesItems) >= totalItemCount)) {
+                    if (!loading && ((visibleItemCount + pastVisibleItems) >= totalItemCount)) {
                         loading = true;
-                        loadMovies(++page);
+                        if (searching) {
+                            if (searchingPage < searchingTotalPages) {
+                                search(++searchingPage, searchView.getQuery().toString());
+                            }
+                        } else {
+                            if (page < totalPages) {
+                                loadMovies(++page);
+                            }
+                        }
                     }
                 }
             }
@@ -97,7 +108,7 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
@@ -109,21 +120,9 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
     private void updateGenres() {
         Services.getAllGenres(this).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Void>() {
+                .subscribe(new Consumer<Genres>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
+                    public void accept(Genres genres) throws Exception {
                         loadMovies(1);
                     }
                 });
@@ -170,6 +169,7 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
             public boolean onClose() {
                 mSwipeRefresh.setEnabled(true);
                 searchView.onActionViewCollapsed();
+                searching = false;
                 return true;
             }
         });
@@ -177,37 +177,52 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
             @Override
             public void onClick(View v) {
                 mSwipeRefresh.setEnabled(false);
+                searching = true;
             }
         });
     }
 
     @Override
-    public boolean onQueryTextChange(String query) {//TODO: colocar aqui lógica de esperar dois segundos
-        search(query);
-        Log.d("search", "searching: " + query);
+    public boolean onQueryTextChange(String query) {
+        searchingPage = 1;
+        if (query.length() > 0) {
+            search(searchingPage, query);
+        } else {
+
+            mAdapter = new Adapter(MoviesListActivity.this, movies);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        search(query);
-        Log.d("search", "submited: " + query);
-        return false;
+        searchingPage = 1;
+        search(searchingPage, query);
+        return true;
     }
 
-    private void search(final String query) {
+    private void search(final int page, final String query) {
 
-        filteredMovies = new ArrayList<>();
-        String[] queries = query.split(" ");
+        Services.searchMovies(page, query).debounce(1300, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Upcoming>() {
+                    @Override
+                    public void accept(Upcoming upcoming) throws Exception {
+                        searchingTotalPages = upcoming.getTotal_pages();
 
-        for (Result movie : movies) {
-            for (String word : queries) {
-                if (movie.getTitle().toLowerCase().contains(word.toLowerCase())) {
-                    filteredMovies.add(movie);
-                }
-            }
-        }
+                        if (page == 1) {
+                            filteredMovies = upcoming.getResults();
+                            mAdapter.updateData(filteredMovies);
+                        } else {
+                            filteredMovies.addAll(upcoming.getResults());
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        loading = false;
 
-        mAdapter.updateData(filteredMovies);
+                    }
+                });
     }
 }

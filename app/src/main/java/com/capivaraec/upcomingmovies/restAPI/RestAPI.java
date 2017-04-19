@@ -5,6 +5,7 @@ import com.capivaraec.upcomingmovies.object.Result;
 import com.capivaraec.upcomingmovies.object.Upcoming;
 import com.rx2androidnetworking.Rx2AndroidNetworking;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,5 +63,23 @@ public class RestAPI {
                 .addQueryParameter(params)
                 .build()
                 .getObjectObservable(Genres.class);
+    }
+
+    public static Observable<Upcoming> searchMovies(int page, String query, String language) {
+
+        try {
+            Map<String, String> params = getMoviesListParams(page, language);
+            String encodedQuery = URLEncoder.encode(query, "UTF-8");
+            params.put("query", encodedQuery);
+
+            return Rx2AndroidNetworking.get("https://api.themoviedb.org/3/search/movie")
+                    .addQueryParameter(params)
+                    .build()
+                    .getObjectObservable(Upcoming.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return Observable.error(e);
+        }
     }
 }

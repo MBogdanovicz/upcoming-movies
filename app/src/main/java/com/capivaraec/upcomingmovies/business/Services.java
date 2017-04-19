@@ -9,7 +9,9 @@ import com.capivaraec.upcomingmovies.object.Upcoming;
 import com.capivaraec.upcomingmovies.restAPI.RestAPI;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.util.ExceptionHelper;
@@ -21,7 +23,6 @@ import io.reactivex.internal.util.ExceptionHelper;
 public class Services {
 
     public static Observable<Upcoming> loadMovies(int page) {
-
         return RestAPI.loadMovies(page, Utils.getLanguage());
     }
 
@@ -29,25 +30,29 @@ public class Services {
         return RestAPI.loadMovieDetails(movieId, Utils.getLanguage());
     }
 
-    public static Observable<Void> getAllGenres(final Context context) {
+    public static Observable<Genres> getAllGenres(final Context context) {
 
         try {
             Genres genres = Utils.getGenresCache(context);
 
             if (genres != null) {
-                return Observable.empty();
+                return Observable.just(genres);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return RestAPI.getAllGenres(Utils.getLanguage()).map(new Function<Genres, Void>() {
+        return RestAPI.getAllGenres(Utils.getLanguage()).map(new Function<Genres, Genres>() {
             @Override
-            public Void apply(Genres genres) throws Exception {
+            public Genres apply(Genres genres) throws Exception {
                 Utils.setGenresCache(context, genres);
 
-                return null;
+                return genres;
             }
         });
+    }
+
+    public static Observable<Upcoming> searchMovies(int page, String query) {
+        return RestAPI.searchMovies(page, query, Utils.getLanguage());
     }
 }
