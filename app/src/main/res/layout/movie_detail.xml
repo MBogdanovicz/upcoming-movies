@@ -22,7 +22,7 @@
             android:layout_alignTop="@id/detail_movie_poster"
             android:textSize="@dimen/detail_title_size"
             android:textStyle="bold"
-            android:layout_marginEnd="@dimen/default_detail_margin"/>
+            android:layout_marginEnd="@dimen/default_detail_margin" />
 
         <TextView
             android:id="@+id/detail_release_date"
