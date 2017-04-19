@@ -24,11 +24,14 @@ import com.capivaraec.upcomingmovies.object.Upcoming;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MoviesListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView mRecyclerView;
     private Adapter mAdapter;
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.movies_list);
 
         AndroidNetworking.initialize(this);
 
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        loadMovies(1);
+        updateGenres();
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
     }
@@ -103,6 +106,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
+    private void updateGenres() {
+        Services.getAllGenres(this).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        loadMovies(1);
+                    }
+                });
+    }
+
     private void loadMovies(final int page) {
         Services.loadMovies(page).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -113,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (movies == null) {
                     movies = upcoming.getResults();
 
-                    mAdapter = new Adapter(MainActivity.this, movies);
+                    mAdapter = new Adapter(MoviesListActivity.this, movies);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     movies.addAll(upcoming.getResults());

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="default_detail_margin">16dp</dimen>
+    <dimen name="separator_height">1dp</dimen>
+    <dimen name="detail_title_size">20sp</dimen>
+    <dimen name="list_title_size">16sp</dimen>
+    <dimen name="detail_poster_width">90dp</dimen>
+    <dimen name="detail_poster_height">160dp</dimen>
+    <dimen name="list_poster_width">67dp</dimen>
+    <dimen name="list_poster_height">100dp</dimen>
+    <dimen name="default_list_margin">8dp</dimen>
+</resources>

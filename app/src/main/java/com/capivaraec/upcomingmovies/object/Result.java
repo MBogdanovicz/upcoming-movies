@@ -15,7 +15,7 @@ public class Result implements Serializable {
     private int id;
     private String original_title;
     private String title;
-
+    private List<Integer> genre_ids;
     private List<Genre> genres;
 
     public String getPoster_path() {
@@ -74,4 +74,11 @@ public class Result implements Serializable {
         this.genres = genres;
     }
 
+    public List<Integer> getGenre_ids() {
+        return genre_ids;
+    }
+
+    public void setGenre_ids(List<Integer> genre_ids) {
+        this.genre_ids = genre_ids;
+    }
 }

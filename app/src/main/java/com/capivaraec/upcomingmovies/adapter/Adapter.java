@@ -1,6 +1,7 @@
 package com.capivaraec.upcomingmovies.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.capivaraec.upcomingmovies.R;
-import com.capivaraec.upcomingmovies.activity.MainActivity;
+import com.capivaraec.upcomingmovies.activity.MoviesListActivity;
+import com.capivaraec.upcomingmovies.business.Utils;
 import com.capivaraec.upcomingmovies.object.Result;
 
 import java.util.List;
@@ -20,23 +22,25 @@ import java.util.List;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private List<Result> mMovies;
-    private MainActivity activity;
+    private MoviesListActivity activity;
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvTitle;
-        private TextView tvDate;
-        private TextView tvReleaseDate;//TODO: implementar
+        private TextView tvGenres;
+        private TextView tvReleaseDate;
         private ImageView ivPoster;
 
         private ViewHolder(View v) {
             super(v);
             tvTitle = (TextView) v.findViewById(R.id.movie_title);
-            tvDate = (TextView) v.findViewById(R.id.movie_release_date);
+            tvReleaseDate = (TextView) v.findViewById(R.id.movie_release_date);
+            tvGenres = (TextView) v.findViewById(R.id.movie_genres);
+            ivPoster = (ImageView) v.findViewById(R.id.movie_poster);
         }
     }
 
-    public Adapter(MainActivity activity, List<Result> movies) {
+    public Adapter(MoviesListActivity activity, List<Result> movies) {
         mMovies = movies;
         this.activity = activity;
     }
@@ -54,7 +58,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         final Result movie = mMovies.get(position);
         holder.tvTitle.setText(movie.getTitle());
-        holder.tvDate.setText(movie.getRelease_date());
+        holder.tvReleaseDate.setText(movie.getRelease_date());
+        holder.tvGenres.setText(TextUtils.join(", ", Utils.getGenres(activity, movie.getGenre_ids())));
+        //TODO: colocar imagem
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

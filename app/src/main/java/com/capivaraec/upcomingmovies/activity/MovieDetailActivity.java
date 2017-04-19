@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.business.Services;
+import com.capivaraec.upcomingmovies.business.Utils;
 import com.capivaraec.upcomingmovies.object.Result;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,7 +31,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView releaseDate;
     private TextView genre;
     private TextView overview;
-    private LinearLayout secondSeparator;
+    private LinearLayout genresLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         releaseDate = (TextView) findViewById(R.id.detail_release_date);
         genre = (TextView) findViewById(R.id.detail_genre);
         overview = (TextView) findViewById(R.id.detail_overview);
-        secondSeparator = (LinearLayout) findViewById(R.id.second_separator);
+        genresLayout = (LinearLayout) findViewById(R.id.genres_layout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -82,22 +83,20 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void showDetails() {
         //poster
         title.setText(movie.getTitle());
-        releaseDate.setText(movie.getRelease_date());
+        releaseDate.setText(Utils.formatDate(movie.getRelease_date()));
         overview.setText(movie.getOverview());
         genre.setText(setMovieGenres());
     }
 
     private String setMovieGenres() {
         if (movie.getGenres() == null) {
-            genre.setVisibility(View.GONE);
-            secondSeparator.setVisibility(View.GONE);
+            genresLayout.setVisibility(View.GONE);
 
             return "";
         } else {
-            genre.setVisibility(View.VISIBLE);
-            secondSeparator.setVisibility(View.VISIBLE);
+            genresLayout.setVisibility(View.VISIBLE);
 
-            return TextUtils.join("\n", movie.getGenres());
+            return TextUtils.join(", ", movie.getGenres());
         }
     }
 }

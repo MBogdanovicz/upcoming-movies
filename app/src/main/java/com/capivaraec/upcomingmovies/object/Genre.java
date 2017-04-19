@@ -31,4 +31,12 @@ public class Genre implements Serializable {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Integer) {
+            return id == (Integer) obj;
+        }
+        return super.equals(obj);
+    }
 }

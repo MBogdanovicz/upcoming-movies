@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Próximos filmes</string>
+    <string name="genre">Gêneros</string>
+    <string name="movie_poster">Pôster do filme</string>
+</resources>
