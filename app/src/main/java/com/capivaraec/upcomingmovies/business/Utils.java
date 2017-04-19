@@ -5,7 +5,11 @@ import android.content.Context;
 import com.capivaraec.upcomingmovies.object.Genre;
 import com.capivaraec.upcomingmovies.object.Genres;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,7 +20,15 @@ import java.util.Locale;
 public class Utils {
 
     private static Genres genres;
-    public static String formatDate(String date) {
+    public static String formatDate(String date, int style) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date d = sdf.parse(date);
+            return DateFormat.getDateInstance(style).format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return date;
     }
 
@@ -70,5 +82,9 @@ public class Utils {
         }
 
         return genres;
+    }
+
+    public static String getPosterURL(String posterPath) {
+        return Constants.POSTER_BASE_URL + posterPath;
     }
 }

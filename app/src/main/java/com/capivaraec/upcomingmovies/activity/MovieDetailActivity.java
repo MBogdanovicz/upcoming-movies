@@ -14,6 +14,9 @@ import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.business.Services;
 import com.capivaraec.upcomingmovies.business.Utils;
 import com.capivaraec.upcomingmovies.object.Result;
+import com.squareup.picasso.Picasso;
+
+import java.text.DateFormat;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -59,7 +62,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -81,9 +84,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void showDetails() {
-        //poster
+        Picasso.with(this).load(Utils.getPosterURL(movie.getPoster_path())).into(poster);
         title.setText(movie.getTitle());
-        releaseDate.setText(Utils.formatDate(movie.getRelease_date()));
+        releaseDate.setText(Utils.formatDate(movie.getRelease_date(), DateFormat.MEDIUM));
         overview.setText(movie.getOverview());
         genre.setText(setMovieGenres());
     }

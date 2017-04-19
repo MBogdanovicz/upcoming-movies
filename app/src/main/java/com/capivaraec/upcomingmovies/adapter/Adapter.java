@@ -12,7 +12,9 @@ import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.activity.MoviesListActivity;
 import com.capivaraec.upcomingmovies.business.Utils;
 import com.capivaraec.upcomingmovies.object.Result;
+import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -58,9 +60,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         final Result movie = mMovies.get(position);
         holder.tvTitle.setText(movie.getTitle());
-        holder.tvReleaseDate.setText(movie.getRelease_date());
+        holder.tvReleaseDate.setText(Utils.formatDate(movie.getRelease_date(), DateFormat.SHORT));
         holder.tvGenres.setText(TextUtils.join(", ", Utils.getGenres(activity, movie.getGenre_ids())));
-        //TODO: colocar imagem
+
+        Picasso.with(activity).load(Utils.getPosterURL(movie.getPoster_path())).into(holder.ivPoster);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

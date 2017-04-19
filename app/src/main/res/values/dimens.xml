@@ -6,7 +6,7 @@
     <dimen name="detail_title_size">20sp</dimen>
     <dimen name="list_title_size">16sp</dimen>
     <dimen name="detail_poster_width">90dp</dimen>
-    <dimen name="detail_poster_height">160dp</dimen>
+    <dimen name="detail_poster_height">135dp</dimen>
     <dimen name="list_poster_width">67dp</dimen>
     <dimen name="list_poster_height">100dp</dimen>
     <dimen name="default_list_margin">8dp</dimen>
