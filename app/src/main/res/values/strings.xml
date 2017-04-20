@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Upcoming movies</string>
+    <string name="genre">Genres</string>
+    <string name="movie_poster">Movie poster</string>
+</resources>

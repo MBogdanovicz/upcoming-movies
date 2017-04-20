@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/movie_poster"
+        android:layout_width="@dimen/list_poster_width"
+        android:layout_height="@dimen/list_poster_height"
+        android:layout_margin="@dimen/default_list_margin"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/movie_poster"/>
+
+    <TextView
+        android:id="@+id/movie_release_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:layout_toEndOf="@id/movie_poster"
+        android:layout_alignTop="@id/movie_poster"
+        android:gravity="right"
+        android:layout_margin="@dimen/default_list_margin"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/movie_poster"
+        android:layout_centerVertical="true">
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:textSize="@dimen/list_title_size"/>
+
+        <TextView
+            android:id="@+id/movie_genres"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:text="Ação, Crime, Thriller"/>
+    </LinearLayout>
+
+</RelativeLayout>
