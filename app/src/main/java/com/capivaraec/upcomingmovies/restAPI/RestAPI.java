@@ -1,13 +1,12 @@
 package com.capivaraec.upcomingmovies.restAPI;
 
-import com.capivaraec.upcomingmovies.object.Genres;
-import com.capivaraec.upcomingmovies.object.Result;
-import com.capivaraec.upcomingmovies.object.Upcoming;
+import com.capivaraec.upcomingmovies.model.Genres;
+import com.capivaraec.upcomingmovies.model.Result;
+import com.capivaraec.upcomingmovies.model.Upcoming;
 import com.rx2androidnetworking.Rx2AndroidNetworking;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;

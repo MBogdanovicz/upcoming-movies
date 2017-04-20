@@ -1,20 +1,14 @@
 package com.capivaraec.upcomingmovies.business;
 
 import android.content.Context;
-import android.provider.Settings;
 
-import com.capivaraec.upcomingmovies.object.Genres;
-import com.capivaraec.upcomingmovies.object.Result;
-import com.capivaraec.upcomingmovies.object.Upcoming;
+import com.capivaraec.upcomingmovies.model.Genres;
+import com.capivaraec.upcomingmovies.model.Result;
+import com.capivaraec.upcomingmovies.model.Upcoming;
 import com.capivaraec.upcomingmovies.restAPI.RestAPI;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * Created by marcelobogdanovicz on 17/04/17.

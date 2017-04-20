@@ -1,7 +1,6 @@
 package com.capivaraec.upcomingmovies.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -11,9 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.capivaraec.upcomingmovies.R;
+import com.capivaraec.upcomingmovies.business.Constants;
 import com.capivaraec.upcomingmovies.business.Services;
 import com.capivaraec.upcomingmovies.business.Utils;
-import com.capivaraec.upcomingmovies.object.Result;
+import com.capivaraec.upcomingmovies.model.Result;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -53,7 +53,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
 
         if (bundle != null) {
-            movie = (Result) bundle.getSerializable("MOVIE");
+            movie = (Result) bundle.getSerializable(Constants.MOVIE_BUNDLE_KEY);
             loadMovieDetails();
         }
     }

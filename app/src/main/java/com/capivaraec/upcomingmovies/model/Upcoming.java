@@ -1,4 +1,4 @@
-package com.capivaraec.upcomingmovies.object;
+package com.capivaraec.upcomingmovies.model;
 
 import java.util.List;
 

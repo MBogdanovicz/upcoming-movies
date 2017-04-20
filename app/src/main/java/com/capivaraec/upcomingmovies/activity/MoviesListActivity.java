@@ -8,34 +8,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.androidnetworking.AndroidNetworking;
 import com.capivaraec.upcomingmovies.R;
-import com.capivaraec.upcomingmovies.adapter.Adapter;
+import com.capivaraec.upcomingmovies.adapter.MoviesListAdapter;
 import com.capivaraec.upcomingmovies.adapter.DividerItemDecoration;
+import com.capivaraec.upcomingmovies.business.Constants;
 import com.capivaraec.upcomingmovies.business.Services;
-import com.capivaraec.upcomingmovies.object.Genres;
-import com.capivaraec.upcomingmovies.object.Result;
-import com.capivaraec.upcomingmovies.object.Upcoming;
+import com.capivaraec.upcomingmovies.model.Genres;
+import com.capivaraec.upcomingmovies.model.Result;
+import com.capivaraec.upcomingmovies.model.Upcoming;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MoviesListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView mRecyclerView;
-    private Adapter mAdapter;
+    private MoviesListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefresh;
     private ProgressBar mProgressBar;
@@ -138,7 +135,7 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
                 if (movies == null) {
                     movies = upcoming.getResults();
 
-                    mAdapter = new Adapter(MoviesListActivity.this, movies);
+                    mAdapter = new MoviesListAdapter(MoviesListActivity.this, movies);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     movies.addAll(upcoming.getResults());
@@ -157,7 +154,7 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
 
     public void showMovieDetails(Result movie) {
         Intent intent = new Intent(getBaseContext(), MovieDetailActivity.class);
-        intent.putExtra("MOVIE", movie);
+        intent.putExtra(Constants.MOVIE_BUNDLE_KEY, movie);
         startActivity(intent);
     }
 
@@ -189,7 +186,7 @@ public class MoviesListActivity extends AppCompatActivity implements SearchView.
             search(searchingPage, query);
         } else {
 
-            mAdapter = new Adapter(MoviesListActivity.this, movies);
+            mAdapter = new MoviesListAdapter(MoviesListActivity.this, movies);
             mRecyclerView.setAdapter(mAdapter);
         }
 

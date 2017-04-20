@@ -2,8 +2,8 @@ package com.capivaraec.upcomingmovies.business;
 
 import android.content.Context;
 
-import com.capivaraec.upcomingmovies.object.Genre;
-import com.capivaraec.upcomingmovies.object.Genres;
+import com.capivaraec.upcomingmovies.model.Genre;
+import com.capivaraec.upcomingmovies.model.Genres;
 
 import java.text.DateFormat;
 import java.text.ParseException;

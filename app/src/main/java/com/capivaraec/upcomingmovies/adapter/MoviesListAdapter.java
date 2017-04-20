@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.capivaraec.upcomingmovies.R;
 import com.capivaraec.upcomingmovies.activity.MoviesListActivity;
 import com.capivaraec.upcomingmovies.business.Utils;
-import com.capivaraec.upcomingmovies.object.Result;
+import com.capivaraec.upcomingmovies.model.Result;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by marcelo on 16/04/17.
  */
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.ViewHolder> {
 
     private List<Result> mMovies;
     private MoviesListActivity activity;
@@ -42,13 +42,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
-    public Adapter(MoviesListActivity activity, List<Result> movies) {
+    public MoviesListAdapter(MoviesListActivity activity, List<Result> movies) {
         mMovies = movies;
         this.activity = activity;
     }
 
     @Override
-    public Adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MoviesListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
 
